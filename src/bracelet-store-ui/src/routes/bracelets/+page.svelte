@@ -1,0 +1,178 @@
+<script>
+</script>
+
+<div class="search-container">
+    <div class="search-input-container">
+        <input type="search" class="search-input" placeholder="Search...">
+        <button class="filter-button">
+            <img src="/images/filterIcon.svg"/>
+        </button>
+    </div>
+    <button type="submit" class="search-btn">Search</button>
+</div>
+
+<p class="store-row-title">Results</p>
+<div class="store-row">
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Silk Bracelet</h2>
+        <p class="description">Red Amethyst</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Very Complicated Fancy Bracelet</h2>
+        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Simple Bracelet</h2>
+        <p class="description">String</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Interesting Bracelet</h2>
+        <p class="description">Secrets</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Interesting Bracelet</h2>
+        <p class="description">Secrets</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Interesting Bracelet</h2>
+        <p class="description">Secrets</p>
+    </a>
+</div>
+
+<style>
+    .search-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 50px;
+    }
+    
+    .search-input-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .filter-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 10px;
+        background-color: #ffffff;
+        border: 1px solid #666666;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .filter-button img {
+        width: 18px;
+        height: 18px;
+    }
+
+    .search-input {
+        flex: 1;
+        background-color: #ffffff;
+        color: #1a1a1a;
+        font-size: 1rem;
+        padding: 10px 16px;
+        margin-right: 15px;
+        border: 1px solid #666666;
+        border-radius: 8px;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #999999;
+    }
+
+    .search-input:focus {
+        border-color: #aaaaaa;
+    }
+
+    .search-btn {
+        background-color: #ffffff;
+        color: #050505;
+        border: #050505 1px solid;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .search-btn:hover {
+        background-color: #f0f0f0;
+    }
+    
+    .store-row-title {
+        margin: 10px 0 50px;
+    }
+    
+    .store-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: safe center;
+        padding: 0 0 15px;
+        gap: 10px;
+    }
+
+    .store-row .item {
+        all: unset;
+        cursor: pointer;
+        display: flex;
+        flex: 0 0 150px;
+        flex-direction: column;
+        border: #808080 1px solid;
+        justify-content: start;
+        align-items: center;
+        padding: 10px;
+        width: 150px;
+    }
+
+    @media(min-width: 1024px) {
+        .store-row .item {
+            flex: 0 0 300px;
+            width: 300px;
+        }
+    }
+
+    .store-row .item h2 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        text-align: left;
+        align-self: start;
+    }
+
+    .store-row .item .thumbnail,
+    .store-row .item .thumbnail img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+    }
+
+    .store-row .item .description {
+        font-size: 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        align-self: start;
+        margin-top: 0;
+        width: 100%;
+        color: #696969;
+    }
+</style>
