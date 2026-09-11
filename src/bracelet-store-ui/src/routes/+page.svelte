@@ -13,45 +13,55 @@
 
 <p class="store-row-title">Bracelets</p>
 <div class="store-row">
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Silk Bracelet</h2>
-        <p class="description">Red Amethyst</p>
-    </div>
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Very Complicated Fancy Bracelet</h2>
-        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
-    </div>
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Simple Bracelet</h2>
-        <p class="description">String</p>
-    </div>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Silk Bracelet</h2>
+            <p class="description">Red Amethyst</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Very Complicated Fancy Bracelet</h2>
+            <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Simple Bracelet</h2>
+            <p class="description">String</p>
+    </a>
 </div>
 
 <p class="store-row-title">New Items</p>
 <div class="store-row">
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Silk Bracelet</h2>
-        <p class="description">Red Amethyst</p>
-    </div>
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Very Complicated Fancy Bracelet</h2>
-        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
-    </div>
-    <div class="item">
-        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
-        <h2>Simple Bracelet</h2>
-        <p class="description">String</p>
-    </div>
-    <div class="item">
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Silk Bracelet</h2>
+            <p class="description">Red Amethyst</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Very Complicated Fancy Bracelet</h2>
+            <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Simple Bracelet</h2>
+            <p class="description">String</p>
+    </a>
+    <a class="item" href="/bracelet/1">
+            <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+            <h2>Interesting Bracelet</h2>
+            <p class="description">Secrets</p>
+    </a>
+    <a class="item" href="/bracelet/1">
         <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
         <h2>Interesting Bracelet</h2>
         <p class="description">Secrets</p>
-    </div>
+    </a>
+    <a class="item" href="/bracelet/1">
+        <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
+        <h2>Interesting Bracelet</h2>
+        <p class="description">Secrets</p>
+    </a>
 </div>
 
 <div class="tail">
@@ -83,18 +93,20 @@
     .store-row {
         display: flex;
         overflow-x: auto;
+        justify-content: safe center;
         padding: 0 0 15px;
         gap: 10px;
     }
     
-    @media(max-width: 1024px) {
-        .store-row {
-            display: flex;
-            flex-wrap: nowrap;
+    @media(min-width: 800px) {
+        .store-row-title {
+            text-align: center;
         }
     }
     
     .store-row .item {
+        all: unset;
+        cursor: pointer;
         display: flex;
         flex: 0 0 150px;
         flex-direction: column;
