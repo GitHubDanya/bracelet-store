@@ -74,7 +74,6 @@
 
 	.tail {
 		height: 10vh;
-		margin: 25vh 0 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
