@@ -65,7 +65,7 @@
 	}
 
 	nav a:hover {
-		color: #ffffff;
+		color: #999999;
 	}
 
 	.container {
