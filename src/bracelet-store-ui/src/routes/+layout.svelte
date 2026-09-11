@@ -17,7 +17,7 @@
 		<a href="/">Logo</a>
 	</div>
 	<nav>
-		<a href="/store">Bracelets</a>
+		<a href="/bracelets">Bracelets</a>
 		<a href="/about">About</a>
 	</nav>
 </header>
