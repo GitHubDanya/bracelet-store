@@ -15,42 +15,64 @@
 
 <a class="return-button" href="/bracelets">&lt; return</a>
 
-<img class="thumbnail" src="{images[selectedIndex]}"/>
+<div class="content">
+    <div class="preview">
+        <img class="thumbnail" src="{images[selectedIndex]}"/>
 
-<div class="toggle-bar">
-    {#each images as image, index}
-        <button class="thumb-button"
-                class:active={selectedIndex === index}
-                on:click={() => selectedIndex = index}
+        <div class="toggle-bar">
+            {#each images as image, index}
+                <button class="thumb-button"
+                        class:active={selectedIndex === index}
+                        on:click={() => selectedIndex = index}
                 >
-            <img src="{image}"/>
+                    <img src="{image}"/>
+                </button>
+            {/each}
+        </div>
+    </div>
+
+    <div class="properties">
+        <h2 class="title">
+            Amazing Bracelet
+        </h2>
+
+        <p class="materials">
+            Rose Quartz, Amethyst, Lava Stone, Glass
+        </p>
+
+        <p class="price">
+            50 ₪
+        </p>
+
+        <button class="purchase-btn-dark">
+            Pay with Bit
         </button>
-    {/each}
+    </div>
 </div>
 
-<h2 class="title">
-    Amazing Bracelet
-</h2>
-
-<p class="materials">
-    Rose Quartz, Amethyst, Lava Stone, Glass
-</p>
-
-<p class="price">
-    50 ₪
-</p>
-
-<button class="purchase-btn-dark">
-    Pay with Bit
-</button>
-
 <style>
+    .content {
+        display: flex;
+        flex-direction: column;
+    }
+    
     .return-button {
         all: unset;
         font-family: "Huninn", sans-serif;
         cursor: pointer;
         font-size: 0.8rem;
         color: #696969;
+    }
+    
+    .preview {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .toggle-bar {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
     }
     
     .thumbnail {
@@ -60,7 +82,7 @@
     }
 
     .thumb-button {
-        border: 2px solid transparent;
+        border: 1px solid transparent;
         padding: 0;
         background: none;
         cursor: pointer;
@@ -78,6 +100,11 @@
     .thumb-button.active {
         border-color: #000;
         opacity: 1;
+    }
+    
+    .properties {
+        display: flex;
+        flex-direction: column;
     }
     
     .title {
@@ -111,5 +138,25 @@
 
     .purchase-btn-dark:hover {
         background-color: #2a2a2a;
+    }
+
+    @media (min-width: 1024px) {
+        .content {
+            flex-direction: row;
+            margin: 0 auto;
+            width: fit-content;
+        }
+        
+        .preview {
+            flex-direction: row-reverse;
+        }
+        
+        .toggle-bar {
+            flex-direction: column;
+        }
+        
+        .thumbnail {
+            width: 600px;
+        }
     }
 </style>
