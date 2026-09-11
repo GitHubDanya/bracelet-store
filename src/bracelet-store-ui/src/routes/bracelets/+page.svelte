@@ -1,18 +1,35 @@
 <script>
+    let isFilterOpen = $state(false);
 </script>
 
 <div class="search-container">
     <div class="search-input-container">
         <input type="search" class="search-input" placeholder="Search...">
-        <button class="filter-button">
+        <button
+                type="button"
+                class="filter-button"
+                on:click={() => isFilterOpen = !isFilterOpen}>
             <img src="/images/filterIcon.svg"/>
         </button>
     </div>
+    {#if isFilterOpen}
+        <div class="filter-menu">
+            <details>
+                <summary>Material</summary>
+                
+                <br/>
+                <ul style="list-style-type: none; padding: 0; margin: 0;">
+                    <li><label><input type="checkbox" /> Quartz</label></li>
+                    <li><label><input type="checkbox" /> Amethyst</label></li>
+                </ul>
+            </details>
+        </div>
+    {/if}
     <button type="submit" class="search-btn">Search</button>
 </div>
 
-<p class="store-row-title">Results</p>
-<div class="store-row">
+<p class="results-title">Results</p>
+<div class="results">
     <a class="item" href="/bracelet/1">
         <img class="thumbnail" src="https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206"/>
         <h2>Silk Bracelet</h2>
@@ -80,6 +97,18 @@
         height: 18px;
     }
 
+    .filter-menu {
+        width: 100%;
+        padding: 12px;
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
     .search-input {
         flex: 1;
         background-color: #ffffff;
@@ -116,11 +145,11 @@
         background-color: #f0f0f0;
     }
     
-    .store-row-title {
+    .results-title {
         margin: 10px 0 50px;
     }
     
-    .store-row {
+    .results {
         display: flex;
         flex-wrap: wrap;
         justify-content: safe center;
@@ -128,7 +157,7 @@
         gap: 10px;
     }
 
-    .store-row .item {
+    .results .item {
         all: unset;
         cursor: pointer;
         display: flex;
@@ -140,15 +169,8 @@
         padding: 10px;
         width: 150px;
     }
-
-    @media(min-width: 1024px) {
-        .store-row .item {
-            flex: 0 0 300px;
-            width: 300px;
-        }
-    }
-
-    .store-row .item h2 {
+    
+    .results .item h2 {
         font-size: 0.9rem;
         font-weight: 600;
         margin-top: 1rem;
@@ -156,8 +178,8 @@
         align-self: start;
     }
 
-    .store-row .item .thumbnail,
-    .store-row .item .thumbnail img {
+    .results .item .thumbnail,
+    .results .item .thumbnail img {
         width: 100%;
         max-width: 100%;
         height: auto;
@@ -165,7 +187,7 @@
         object-fit: cover;
     }
 
-    .store-row .item .description {
+    .results .item .description {
         font-size: 0.6rem;
         white-space: nowrap;
         overflow: hidden;
@@ -174,5 +196,16 @@
         margin-top: 0;
         width: 100%;
         color: #696969;
+    }
+
+    @media(min-width: 1024px) {
+        .results-title {
+            text-align: center;
+        }
+        
+        .results .item {
+            flex: 0 0 300px;
+            width: 300px;
+        }
     }
 </style>
