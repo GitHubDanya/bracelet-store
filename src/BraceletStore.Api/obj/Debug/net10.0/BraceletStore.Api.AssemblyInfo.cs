@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BraceletStore.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2bf03350bc4e4b569a39daed8c7c21da5ed9725")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f17bc8c17dfe8207fa4fb983ffeb3289fdb914e")]
 [assembly: System.Reflection.AssemblyProductAttribute("BraceletStore.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BraceletStore.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
