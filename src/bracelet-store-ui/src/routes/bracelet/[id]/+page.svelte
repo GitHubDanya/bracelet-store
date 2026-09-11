@@ -1,0 +1,115 @@
+<script>
+    const images = [
+        "https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206",
+        "https://le-bijouparis.com/cdn/shop/files/64CE05EA-2F82-4893-826C-B9C736A5E0D4.jpg?v=1769290043&width=1000"
+    ]
+    
+    let selectedIndex = $state(0)
+</script>
+
+<svelte:head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+</svelte:head>
+
+<a class="return-button" href="/bracelets">&lt; return</a>
+
+<img class="thumbnail" src="{images[selectedIndex]}"/>
+
+<div class="toggle-bar">
+    {#each images as image, index}
+        <button class="thumb-button"
+                class:active={selectedIndex === index}
+                on:click={() => selectedIndex = index}
+                >
+            <img src="{image}"/>
+        </button>
+    {/each}
+</div>
+
+<h2 class="title">
+    Amazing Bracelet
+</h2>
+
+<p class="materials">
+    Rose Quartz, Amethyst, Lava Stone, Glass
+</p>
+
+<p class="price">
+    50 ₪
+</p>
+
+<button class="purchase-btn-dark">
+    Pay with Bit
+</button>
+
+<style>
+    .return-button {
+        all: unset;
+        font-family: "Huninn", sans-serif;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: #696969;
+    }
+    
+    .thumbnail {
+        width: calc(100% - 20px);
+        height: auto;
+        margin: 10px;
+    }
+
+    .thumb-button {
+        border: 2px solid transparent;
+        padding: 0;
+        background: none;
+        cursor: pointer;
+        border-radius: 6px;
+        overflow: hidden;
+        opacity: 0.6;
+        transition: opacity 0.2s, border-color 0.2s;
+    }
+    
+    .thumb-button img {
+        width: 60px;
+        height: auto;
+    }
+
+    .thumb-button.active {
+        border-color: #000;
+        opacity: 1;
+    }
+    
+    .title {
+        font-size: 1.2rem;
+    }
+    
+    .materials {
+        font-size: 0.8rem;
+        color: #696969;
+    }
+    
+    .price {
+        font-family: "Huninn", sans-serif;
+        font-size: 100;
+        text-align: right;
+        color: #696969;
+    }
+
+    .purchase-btn-dark {
+        background-color: #121212;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 12px 24px;
+        margin-top: 5px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .purchase-btn-dark:hover {
+        background-color: #2a2a2a;
+    }
+</style>
