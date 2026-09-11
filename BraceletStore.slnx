@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BraceletStore.Api/BraceletStore.Api.csproj" />
+  </Folder>
+</Solution>
