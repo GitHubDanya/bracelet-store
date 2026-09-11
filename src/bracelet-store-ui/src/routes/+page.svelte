@@ -64,10 +64,6 @@
     </a>
 </div>
 
-<div class="tail">
-    © 2026
-</div>
-
 <style>
     .title {
         display: flex;
@@ -150,16 +146,5 @@
         margin-top: 0;
         width: 100%;
         color: #696969;
-    }
-    
-    .tail {
-        height: 10vh;
-        margin: 25vh 0 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: #696969;
-        font-size: 0.6rem;
     }
 </style>
