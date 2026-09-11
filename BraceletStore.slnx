@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <File Path="src\bracelet-store-ui\static\images\bracelet.jpeg" />
+    <File Path="src\bracelet-store-ui\static\images\bracelet2.jpeg" />
     <Project Path="src/BraceletStore.Api/BraceletStore.Api.csproj" />
   </Folder>
 </Solution>

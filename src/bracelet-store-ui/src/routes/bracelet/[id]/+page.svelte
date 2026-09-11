@@ -1,7 +1,7 @@
 <script>
     const images = [
-        "https://le-bijouparis.com/cdn/shop/files/A65FC327-6EE9-4B58-8954-3984ED1A802E.jpg?v=1769290043&width=1206",
-        "https://le-bijouparis.com/cdn/shop/files/64CE05EA-2F82-4893-826C-B9C736A5E0D4.jpg?v=1769290043&width=1000"
+        "/images/bracelet.jpeg",
+        "/images/bracelet2.jpeg"
     ]
     
     let selectedIndex = $state(0)
