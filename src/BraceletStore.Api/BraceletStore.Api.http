@@ -1,6 +1,6 @@
-@BraceletStore.Api_HostAddress = http://localhost:5053
+@BraceletStore.Api_HostAddress = http://127.0.0.1:5053
 
-GET {{BraceletStore.Api_HostAddress}}/weatherforecast/
+GET {{BraceletStore.Api_HostAddress}}/inventory
 Accept: application/json
 
 ###
