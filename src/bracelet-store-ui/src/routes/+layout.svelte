@@ -7,7 +7,7 @@
 	const toggleLanguageDrop = () => languageDropOpen = !languageDropOpen
 	async function setLanguage(langCode: string) {
 		languageDropOpen = false
-		document.cookie = `lang=${langCode}; path=/; max-age=31536000; SameSite=Lax`;
+		document.cookie = `lang=${langCode}; path=/; SameSite=Lax`;
 		await invalidateAll();
 	}
 </script>
