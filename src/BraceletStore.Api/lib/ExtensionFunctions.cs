@@ -1,3 +1,4 @@
+using BraceletStore.Api.lib.Queries;
 using BraceletStore.Api.Models;
 
 namespace BraceletStore.Api.lib;
@@ -11,4 +12,6 @@ public static class ExtensionFunctions
             Language.Russian => name.Ru,
             _ => name.En
         };
+
+    
 }
