@@ -16,9 +16,11 @@ public record QueryResult<T>(T? Data, QueryStatus Status, Exception? Exception =
         {
             QueryStatus.Ok => new OkObjectResult(Data),
             QueryStatus.NotFound => new NotFoundResult(),
-            _ => new ObjectResult(Exception?.Message) { StatusCode = 500 }
+            _ => new ObjectResult(new { error = Exception?.Message ?? "An unexpected server error occurred." })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            }
         };
-    
 }
 
 public enum QueryStatus
