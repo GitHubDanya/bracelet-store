@@ -5,6 +5,8 @@ DotEnv.Load(options: new DotEnvOptions(
     probeLevelsToSearch: 4
 ));
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapControllers();
 app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();
