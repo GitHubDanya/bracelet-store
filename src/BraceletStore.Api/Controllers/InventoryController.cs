@@ -10,9 +10,9 @@ namespace BraceletStore.Api.Controllers;
 public class InventoryController : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Bracelet>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Bracelet>>> GetAll([FromQuery] BraceletFilter filter)
     {
-        var result = await BraceletRepository.SearchAsync();
+        var result = await BraceletRepository.SearchAsync(filter);
         return result.ToActionResult();
     }
 
