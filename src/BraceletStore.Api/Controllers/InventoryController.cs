@@ -13,6 +13,7 @@ public class InventoryController : ControllerBase
         new Bracelet
         {
             Id = 1,
+            Available = true,
             ThumbnailUrls = new List<string>() { "Lorem" },
             Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
             Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
@@ -22,6 +23,7 @@ public class InventoryController : ControllerBase
         new Bracelet
         {
             Id = 2,
+            Available = true,
             ThumbnailUrls = new List<string>() { "Lorem" },
             Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
             Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
@@ -31,6 +33,7 @@ public class InventoryController : ControllerBase
         new Bracelet
         {
             Id = 3,
+            Available = true,
             ThumbnailUrls = new List<string>() { "Lorem" },
             Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
             Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
