@@ -1,10 +1,6 @@
-using System.Data;
-using System.Threading.Tasks;
 using BraceletStore.Api.lib.Queries;
 using BraceletStore.Api.Models.Bracelet;
-using Microsoft.AspNetCore.Components;
 using Dapper;
-using Npgsql;
 
 namespace BraceletStore.Api.Database.Repositories;
 
@@ -28,4 +24,59 @@ public static class BraceletRepository
         return await DataProvider.QuerySingleAsync(db =>
             db.QueryFirstOrDefaultAsync<Bracelet>(sql, new { Id = id }));
     }
+
+    public static async Task<QueryResult<IEnumerable<Bracelet>>> SearchAsync(BraceletFilter? filter = null)
+    {
+        filter ??= new BraceletFilter();
+        var builder = new SqlBuilder();
+
+        var selector =
+            builder.AddTemplate("""
+                                SELECT
+                                id AS Id, available AS Available, price AS Price,
+                                thumbnail_urls AS ThumbnailUrls, name As Name, 
+                                description AS Description, materials AS Materials,
+                                color AS Color
+                                FROM Bracelets
+
+                                ORDER BY id DESC
+                                LIMIT @Limit OFFSET @Offset
+                                """,
+                new
+                {
+                    Limit = filter.PageSize,
+                    Offset = (filter.Page - 1) * filter.PageSize,
+                    Lang = filter.Lang
+                });
+
+        if (filter.AvailableOnly == true) builder.Where("available = true");
+        if (filter.MinPrice.HasValue) builder.Where("price >= @MinPrice");
+        if (filter.MaxPrice.HasValue) builder.Where($"price <= @MaxPrice");
+
+        if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
+        {
+            builder.Where("(name->>@Lang ILIKE @Term OR description->>@Lang ILIKE @Term)",
+                new { Term = $"%{filter.SearchTerm}%", Lang = filter.Lang });
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Material))
+        {
+            builder.Where("materials @> jsonb_build_array(jsonb_build_object(@Lang, @Material))",
+                new { Lang = filter.Lang, Material = filter.Material });
+        }
+
+        return await DataProvider.QuerySingleAsync(db =>
+            db.QueryFirstOrDefaultAsync<IEnumerable<Bracelet>>(selector.RawSql, selector.Parameters));
+    }
 }
+
+public record BraceletFilter(
+    string? SearchTerm = null,
+    string? Material = null,
+    decimal? MinPrice = null,
+    decimal? MaxPrice = null,
+    bool? AvailableOnly = null,
+    string Lang = "en",
+    int Page = 1,
+    int PageSize = 20
+    );
