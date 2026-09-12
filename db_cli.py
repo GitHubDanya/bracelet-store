@@ -201,7 +201,15 @@ def insert_user_prompt_into_db(db_connection: connection, table_name: str, promp
 
         elif '[ARRAY]' in raw_key:
             if isinstance(value, str):
-                cleaned_data[clean_key] = [item.strip() for item in value.split(',') if item.strip()]
+                try:
+                    parsed_list = json.loads(value)
+
+                    cleaned_data[clean_key] = [
+                        Json(item) if isinstance(item, dict) else item
+                        for item in parsed_list
+                    ]
+                except json.JSONDecodeError:
+                    cleaned_data[clean_key] = [item.strip() for item in value.split(',') if item.strip()]
             else:
                 cleaned_data[clean_key] = value
 
@@ -226,11 +234,12 @@ def file_to_prompt(filepath: str, table_schema: list[ColumnInfo]) -> dict:
         for line in file:
             if ':' not in line: continue
             key, value = line.split(':', 1)
-            file_content[key.strip()] = value
+            file_content[key.strip()] = value.strip()
 
     for index, value in enumerate(table_schema):
         if str(index) not in file_content: continue
-        result[value.name] = file_content[str(index)]
+        key_name = f"{value.name} [{value.data_type}]"
+        result[key_name] = file_content[str(index)]
 
     return result
 
