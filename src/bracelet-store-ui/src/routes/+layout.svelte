@@ -20,8 +20,11 @@
 <header class="top-bar">
 	<div class="logo">
 		<a class="logo" href="/">
-			<img src="/images/cherryIcon.svg"/>
-			<p>Cherry </p>
+			<img src="/images/cherryIcon2.svg"/>
+			<div>
+				<p style="margin: 0;">Cherry </p>
+				<p style="font-size: 0.8rem; color: #696969; margin: -5px 2px 0 0;">Anne</p>
+			</div>
 		</a>
 	</div>
 	<nav>
@@ -72,7 +75,7 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		gap: 1rem;
+		gap: 0.5rem;
 	}
 
 	.logo a {
@@ -83,8 +86,9 @@
 	}
 	
 	.logo a img {
-		height: 2rem;
-		width: 2rem;
+		height: 1.5rem;
+		width: 1.5rem;
+		#transform: rotate(15deg);
 	}
 	
 	nav {
