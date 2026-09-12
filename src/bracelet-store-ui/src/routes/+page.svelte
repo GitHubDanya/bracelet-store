@@ -1,4 +1,31 @@
 <script>
+    import { onMount } from 'svelte';
+    import { t } from '$lib/i18n.svelte';
+
+    let newBracelets = $state([]);
+    let randomBracelets = $state([]);
+    let filter = { pageSize: 5 };
+
+    async function fetchInventory(params = {}) {
+        const activeParams = Object.fromEntries(
+            Object.entries(params).filter(([_, val]) => val !== null && val !== undefined && val !== '')
+        );
+        const queryString = new URLSearchParams(activeParams).toString();
+        const url = `/api/inventory${queryString ? `?${queryString}` : ''}`;
+
+        const res = await fetch(url);
+        return res.ok ? await res.json() : [];
+    }
+
+    onMount(async () => {
+        const [fetchedNew, fetchedAll] = await Promise.all([
+            fetchInventory(filter),
+            fetchInventory()
+        ]);
+
+        newBracelets = fetchedNew;
+        randomBracelets = [...fetchedAll].sort(() => Math.random() - 0.5);
+    });
 </script>
 
 <svelte:head>
@@ -13,60 +40,42 @@
 
 <p class="store-row-title">Bracelets</p>
 <div class="store-row">
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Silk Bracelet</h2>
-            <p class="description">Red Amethyst</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Very Complicated Fancy Bracelet</h2>
-            <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Simple Bracelet</h2>
-            <p class="description">String</p>
-    </a>
+    {#each randomBracelets as item (item.id)}
+        <a class="item" href="/bracelet/{item.id}">
+            <img class="thumbnail" src="{item.thumbnailUrls[0]}" />
+            <h2>{t(item.name)}</h2>
+            <p class="description">
+                {item.materials.map(m => t(m)).join(', ')}
+            </p>
+        </a>
+    {/each}
 </div>
 
 <img class="banner" src="/images/braceletBanner.jpg" />
 
 <p class="store-row-title">New Items</p>
 <div class="store-row">
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Silk Bracelet</h2>
-            <p class="description">Red Amethyst</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Very Complicated Fancy Bracelet</h2>
-            <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Simple Bracelet</h2>
-            <p class="description">String</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-            <img class="thumbnail" src="/images/bracelet.jpeg"/>
-            <h2>Interesting Bracelet</h2>
-            <p class="description">Secrets</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Interesting Bracelet</h2>
-        <p class="description">Secrets</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Interesting Bracelet</h2>
-        <p class="description">Secrets</p>
-    </a>
+    {#each newBracelets as item (item.id)}
+        <a class="item" href="/bracelet/{item.id}">
+            <img class="thumbnail" src="{item.thumbnailUrls[0]}" />
+            <h2>{t(item.name)}</h2>
+            <p class="description">
+                {item.materials.map(m => t(m)).join(', ')}
+            </p>
+        </a>
+    {/each}
 </div>
 
 <style>
+    :global(body) {
+        margin: 0 !important;
+    }
+    
+    :global(main)
+    {
+        overflow-x: hidden;
+    }
+    
     .title {
         display: flex;
         justify-content: center;
@@ -161,6 +170,7 @@
         left: 50%;
         right: 50%;
         margin: 30vh -50vw 25vh;
+        overflow-x: hidden;
 
         display: block;
         max-width: none;
