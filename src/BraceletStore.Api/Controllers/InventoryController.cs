@@ -1,4 +1,5 @@
-using BraceletStore.Api.Models;
+using BraceletStore.Api.Database.Repositories;
+using BraceletStore.Api.lib.Queries;
 using BraceletStore.Api.Models.Bracelet;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,50 +9,17 @@ namespace BraceletStore.Api.Controllers;
 [Route("[controller]")]
 public class InventoryController : ControllerBase
 {
-    private static readonly List<Bracelet> Bracelets = new()
-    {
-        new Bracelet
-        {
-            Id = 1,
-            Available = true,
-            ThumbnailUrls = new List<string>() { "Lorem" },
-            Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Materials = new List<LocalizedRecord>() { new LocalizedRecord("Lorem", "Lorem", "Lorem"), },
-            Color = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-        },
-        new Bracelet
-        {
-            Id = 2,
-            Available = true,
-            ThumbnailUrls = new List<string>() { "Lorem" },
-            Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Materials = new List<LocalizedRecord>() { new LocalizedRecord("Lorem", "Lorem", "Lorem"), },
-            Color = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-        },
-        new Bracelet
-        {
-            Id = 3,
-            Available = true,
-            ThumbnailUrls = new List<string>() { "Lorem" },
-            Name = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Description = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-            Materials = new List<LocalizedRecord>() { new LocalizedRecord("Lorem", "Lorem", "Lorem"), },
-            Color = new LocalizedRecord("Lorem", "Lorem", "Lorem"),
-        }
-    };
-
     [HttpGet]
-    public ActionResult<IEnumerable<Bracelet>> GetAll()
+    public async Task<ActionResult<IEnumerable<Bracelet>>> GetAll()
     {
-        return Ok(Bracelets);
+        var result = await BraceletRepository.SearchAsync();
+        return result.ToActionResult();
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Bracelet> GetById(int id)
+    public async Task<ActionResult<Bracelet>> GetById(int id)
     {
-        Bracelet? bracelet = Bracelets.FirstOrDefault(b => b.Id == id);
-        return bracelet is not null ? Ok(bracelet) : NotFound();
+        var result = await BraceletRepository.FindByIdAsync(id);
+        return result.ToActionResult();
     }
 }
