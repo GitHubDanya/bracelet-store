@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("user", help="PostgreSQL Username")
     parser.add_argument("password", help="PostgreSQL Password")
     parser.add_argument("database", help="PostgreSQL Database name")
+    parser.add_argument("-i", "--input", help="Path to input file for automated additions")
 
     return parser.parse_args()
 
@@ -63,7 +64,7 @@ def get_tables(db_conn: connection):
     return [row[0] for row in tables]
 
 
-def get_table_schema(db_conn: connection, table_name: str):
+def get_table_schema(db_conn: connection, table_name: str) -> list[ColumnInfo]:
     cursor = db_conn.cursor()
 
     query = """
@@ -111,7 +112,7 @@ def get_user_selected_table(db_conn: connection) -> str | None:
         return answers['target_table']
     return None
 
-def get_user_action():
+def get_user_action() -> UserAction | None:
     enum_choices = [(action.name.replace('_', ' ').capitalize(), action) for action in UserAction]
 
     questions = [
@@ -139,13 +140,7 @@ def get_inquirer_question_for_field(field: ColumnInfo):
         return inquirer.Text(label, message=f"Enter {label}")
 
 
-def format_to_json(answers: dict, table_schema: list[ColumnInfo]) -> dict:
-    for field in table_schema:
-        continue
-
-    return answers
-
-def prompt_user_insert(table_schema: list[ColumnInfo]):
+def prompt_user_insert(table_schema: list[ColumnInfo]) -> dict:
     questions = []
 
     print("\nPlease fill out these schema parameters: ")
@@ -156,11 +151,24 @@ def prompt_user_insert(table_schema: list[ColumnInfo]):
             continue
         questions.append(get_inquirer_question_for_field(field))
 
-    answers = format_to_json(inquirer.prompt(questions), table_schema)
+    answers = inquirer.prompt(questions)
 
     return answers
 
-def insert_user_prompt_into_db(db_connection: connection, prompt: dict):
+def query_raw_db_insert(db_connection: connection, table_name: str, data: dict):
+    columns = list(data.keys())
+    column_names = ", ".join(columns)
+    placeholders = ", ".join(["%s"] * len(columns))
+    values = [data[col] for col in columns]
+
+    query = f"INSERT INTO {table_name} ({column_names}) VALUES ({placeholders});"
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(query, values)
+        db_connection.commit()
+        print(f"Successfully inserted row into database!")
+
+def insert_user_prompt_into_db(db_connection: connection, table_name: str, prompt: dict):
     cleaned_data = {}
 
     for raw_key, value in prompt.items():
@@ -191,17 +199,20 @@ def insert_user_prompt_into_db(db_connection: connection, prompt: dict):
         print("No valid fields to insert.")
         return
 
-    columns = list(cleaned_data.keys())
-    column_names = ", ".join(columns)
-    placeholders = ", ".join(["%s"] * len(columns))
-    values = [cleaned_data[col] for col in columns]
+    query_raw_db_insert(db_connection, table_name, cleaned_data)
 
-    query = f"INSERT INTO bracelets ({column_names}) VALUES ({placeholders});"
 
-    with db_connection.cursor() as cursor:
-        cursor.execute(query, values)
-        db_connection.commit()
-        print(f"Successfully inserted row into database!")
+def file_to_prompt(filepath: str, table_schema: list[ColumnInfo]) -> dict:
+    result = {}
+
+    file_content = []
+    with open(filepath, 'r') as file:
+        file_content = [line.strip() for line in file.read().split('\n')]
+
+    for index, value in enumerate(table_schema):
+        result[value.name] = file_content[index]
+
+    return result
 
 
 def main():
@@ -214,9 +225,15 @@ def main():
         print("Failed to fetch table.")
         return
 
-    selected_action = get_user_action()
-
     table_schema = get_table_schema(db_connection, selected_table)
+
+    if arguments.input is not None:
+        prompt = file_to_prompt(arguments.input, table_schema)
+        insert_user_prompt_into_db(db_connection, prompt)
+        print(f"Inserted {arguments.input} into {selected_table}.")
+        return
+
+    selected_action = get_user_action()
 
     match selected_action:
         case UserAction.ADD_ITEM:
