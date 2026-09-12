@@ -30,6 +30,8 @@
     </a>
 </div>
 
+<img class="banner" src="/images/braceletBanner.jpg" />
+
 <p class="store-row-title">New Items</p>
 <div class="store-row">
     <a class="item" href="/bracelet/1">
@@ -146,5 +148,17 @@
         margin-top: 0;
         width: 100%;
         color: #696969;
+    }
+    
+    .banner {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin: 30vh -50vw 25vh;
+
+        display: block;
+        max-width: none;
+        height: auto;
     }
 </style>
