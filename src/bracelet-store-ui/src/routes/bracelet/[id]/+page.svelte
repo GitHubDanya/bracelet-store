@@ -1,10 +1,20 @@
 <script>
-    const images = [
-        "/images/bracelet.jpeg",
-        "/images/bracelet2.jpeg"
-    ]
-    
-    let selectedIndex = $state(0)
+    import { t } from '$lib/i18n.svelte';
+
+    let { data } = $props();
+    let bracelet = $state(null);
+    let selectedIndex = $state(0);
+
+    $effect(() => {
+        if (!data.id) return;
+
+        fetch(`/api/inventory/${data.id}`)
+            .then(res => res.ok ? res.json() : null)
+            .then(result => {
+                bracelet = result;
+                selectedIndex = 0;
+            });
+    });
 </script>
 
 <svelte:head>
@@ -15,40 +25,42 @@
 
 <a class="return-button" href="/bracelets">&lt; return</a>
 
-<div class="content">
-    <div class="preview">
-        <img class="thumbnail square-crop" src="{images[selectedIndex]}"/>
+{#if bracelet}
+    <div class="content">
+        <div class="preview">
+            <img class="thumbnail square-crop" src="{bracelet.thumbnailUrls[selectedIndex]}"/>
 
-        <div class="toggle-bar">
-            {#each images as image, index}
-                <button class="thumb-button"
-                        class:active={selectedIndex === index}
-                        on:click={() => selectedIndex = index}
-                >
-                    <img class="square-crop" src="{image}"/>
-                </button>
-            {/each}
+            <div class="toggle-bar">
+                {#each bracelet.thumbnailUrls as image, index}
+                    <button class="thumb-button"
+                            class:active={selectedIndex === index}
+                            on:click={() => selectedIndex = index}
+                    >
+                        <img class="square-crop" src="{image}"/>
+                    </button>
+                {/each}
+            </div>
+        </div>
+
+        <div class="properties">
+            <h2 class="title">
+                {t(bracelet.name)}
+            </h2>
+
+            <p class="materials">
+                {bracelet.materials.map(m => t(m)).join(', ')}
+            </p>
+
+            <p class="price">
+                {bracelet.price} ₪
+            </p>
+
+            <button class="purchase-btn-dark">
+                Pay with Bit
+            </button>
         </div>
     </div>
-
-    <div class="properties">
-        <h2 class="title">
-            Amazing Bracelet
-        </h2>
-
-        <p class="materials">
-            Rose Quartz, Amethyst, Lava Stone, Glass
-        </p>
-
-        <p class="price">
-            50 ₪
-        </p>
-
-        <button class="purchase-btn-dark">
-            Pay with Bit
-        </button>
-    </div>
-</div>
+{/if}
 
 <style>
     .content {
@@ -148,17 +160,28 @@
         background-color: #2a2a2a;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 800px) {
         .content {
             flex-direction: row;
             margin: 0 auto;
-            width: fit-content;
+            width: 100%;
+            max-width: 70vw;
         }
         
         .preview {
             flex-direction: row-reverse;
+            min-width: 0;
         }
         
+        .thumbnail {
+            max-width: 50vw;
+            height: auto;
+        }
+        
+        .properties {
+            width: 20vw;
+        }
+
         .toggle-bar {
             flex-direction: column;
         }
