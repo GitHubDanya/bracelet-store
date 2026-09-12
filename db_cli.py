@@ -30,7 +30,6 @@ class ColumnInfo:
     status: ColumnStatus
 
     def to_string(self) -> str:
-        # F-strings and conditional inline formatting are usually preferred here
         nullable_str = " (nullable)" if self.is_nullable else ""
         default_str = " (default)" if self.has_default else ""
 
