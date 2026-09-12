@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import inquirer
 import json
 import psycopg2
+from psycopg2 import sql
 from psycopg2.extras import Json
 from psycopg2.extensions import connection
 from enum import Enum
@@ -10,7 +11,8 @@ from enum import Enum
 
 class UserAction(Enum):
     ADD_ITEM = 1
-    REMOVE_ITEM = 2
+    GET_SCHEMA = 2
+    REMOVE_ITEM = 3
 
 
 class ColumnStatus(Enum):
@@ -27,6 +29,12 @@ class ColumnInfo:
     has_default: bool
     status: ColumnStatus
 
+    def to_string(self) -> str:
+        # F-strings and conditional inline formatting are usually preferred here
+        nullable_str = " (nullable)" if self.is_nullable else ""
+        default_str = " (default)" if self.has_default else ""
+
+        return f"{self.name} [{self.data_type}]{nullable_str}{default_str} {self.status.name}"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser("Tool for talking with a postgres database.")
@@ -39,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def connect_to_db(user: str, password: str, dbname: str) -> connection:
+def connect_to_db(user: str, password: str, dbname: str) -> connection | None:
     try:
         connection = psycopg2.connect(
             host="localhost",
@@ -112,6 +120,7 @@ def get_user_selected_table(db_conn: connection) -> str | None:
         return answers['target_table']
     return None
 
+
 def get_user_action() -> UserAction | None:
     enum_choices = [(action.name.replace('_', ' ').capitalize(), action) for action in UserAction]
 
@@ -155,18 +164,25 @@ def prompt_user_insert(table_schema: list[ColumnInfo]) -> dict:
 
     return answers
 
+
 def query_raw_db_insert(db_connection: connection, table_name: str, data: dict):
+    print(data)
     columns = list(data.keys())
     column_names = ", ".join(columns)
     placeholders = ", ".join(["%s"] * len(columns))
     values = [data[col] for col in columns]
 
-    query = f"INSERT INTO {table_name} ({column_names}) VALUES ({placeholders});"
+    query = sql.SQL("INSERT INTO {} ({}) VALUES ({});").format(
+        sql.Identifier(table_name),
+        sql.SQL(', ').join(map(sql.Identifier, columns)),
+        sql.SQL(', ').join(sql.Placeholder() * len(columns))
+    )
 
     with db_connection.cursor() as cursor:
         cursor.execute(query, values)
         db_connection.commit()
         print(f"Successfully inserted row into database!")
+
 
 def insert_user_prompt_into_db(db_connection: connection, table_name: str, prompt: dict):
     cleaned_data = {}
@@ -203,14 +219,18 @@ def insert_user_prompt_into_db(db_connection: connection, table_name: str, promp
 
 
 def file_to_prompt(filepath: str, table_schema: list[ColumnInfo]) -> dict:
+    file_content = {}
     result = {}
 
-    file_content = []
     with open(filepath, 'r') as file:
-        file_content = [line.strip() for line in file.read().split('\n')]
+        for line in file:
+            if ':' not in line: continue
+            key, value = line.split(':', 1)
+            file_content[key.strip()] = value
 
     for index, value in enumerate(table_schema):
-        result[value.name] = file_content[index]
+        if str(index) not in file_content: continue
+        result[value.name] = file_content[str(index)]
 
     return result
 
@@ -219,6 +239,7 @@ def main():
     arguments = parse_args()
     print("\nConnecting to db...")
     db_connection = connect_to_db(arguments.user, arguments.password, arguments.database)
+    if db_connection is None: return
 
     selected_table = get_user_selected_table(db_connection)
     if selected_table is None:
@@ -229,7 +250,7 @@ def main():
 
     if arguments.input is not None:
         prompt = file_to_prompt(arguments.input, table_schema)
-        insert_user_prompt_into_db(db_connection, prompt)
+        insert_user_prompt_into_db(db_connection, selected_table, prompt)
         print(f"Inserted {arguments.input} into {selected_table}.")
         return
 
@@ -239,10 +260,13 @@ def main():
         case UserAction.ADD_ITEM:
             prompt = prompt_user_insert(table_schema)
             print(prompt)
-            insert_user_prompt_into_db(db_connection, prompt)
+            insert_user_prompt_into_db(db_connection, selected_table, prompt)
+        case UserAction.GET_SCHEMA:
+            for i, column in enumerate(table_schema):
+                print(f'{i}. {column.to_string()}')
+            print('\nDone.')
         case _:
             print("nil")
-
 
 
 if __name__ == "__main__":
