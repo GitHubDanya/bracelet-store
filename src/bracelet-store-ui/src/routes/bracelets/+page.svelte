@@ -51,39 +51,6 @@
     {/each}
 </div>
 
-<!--<div class="results">-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Silk Bracelet</h2>-->
-<!--        <p class="description">Red Amethyst</p>-->
-<!--    </a>-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Very Complicated Fancy Bracelet</h2>-->
-<!--        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>-->
-<!--    </a>-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Simple Bracelet</h2>-->
-<!--        <p class="description">String</p>-->
-<!--    </a>-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Interesting Bracelet</h2>-->
-<!--        <p class="description">Secrets</p>-->
-<!--    </a>-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Interesting Bracelet</h2>-->
-<!--        <p class="description">Secrets</p>-->
-<!--    </a>-->
-<!--    <a class="item" href="/bracelet/1">-->
-<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
-<!--        <h2>Interesting Bracelet</h2>-->
-<!--        <p class="description">Secrets</p>-->
-<!--    </a>-->
-<!--</div>-->
-
 <style>
     .search-container {
         display: flex;
@@ -190,6 +157,11 @@
         align-items: center;
         padding: 10px;
         width: 150px;
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .results .item:hover {
+        transform: scale(1.05);
     }
     
     .results .item h2 {

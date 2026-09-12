@@ -92,7 +92,7 @@
         display: flex;
         overflow-x: auto;
         justify-content: safe center;
-        padding: 0 0 15px;
+        padding: 15px 0;
         gap: 10px;
     }
     
@@ -113,6 +113,11 @@
         align-items: center;
         padding: 10px;
         width: 150px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .store-row .item:hover {
+        transform: scale(1.05);
     }
     
     @media(min-width: 1024px) {
