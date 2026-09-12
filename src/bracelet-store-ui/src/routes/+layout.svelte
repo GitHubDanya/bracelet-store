@@ -1,18 +1,21 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import { invalidateAll } from '$app/navigation';
 	let { children } = $props();
 	
 	let languageDropOpen = $state(false)
 	const toggleLanguageDrop = () => languageDropOpen = !languageDropOpen
-	function setLanguage(language) {
+	async function setLanguage(langCode: string) {
 		languageDropOpen = false
+		document.cookie = `lang=${langCode}; path=/; max-age=31536000; SameSite=Lax`;
+		await invalidateAll();
 	}
 </script>
 
 <svelte:head>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=PT+Serif+Caption:ital@0;1&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=PT+Serif+Caption:ital@0;1&display=swap" rel="stylesheet">
 	
 	<link rel="icon" href={favicon} />
 </svelte:head>
@@ -39,9 +42,9 @@
 
 		{#if languageDropOpen}
 			<ul class="dropdown-menu">
-				<li><button onclick={() => setLanguage('English')}>English</button></li>
-				<li><button onclick={() => setLanguage('Spanish')}>Español</button></li>
-				<li><button onclick={() => setLanguage('French')}>Français</button></li>
+				<li><button onclick={() => setLanguage('en')}>English</button></li>
+				<li><button onclick={() => setLanguage('he')}>עברית</button></li>
+				<li><button onclick={() => setLanguage('ru')}>Русский</button></li>
 			</ul>
 		{/if}
 	</div>
@@ -57,7 +60,7 @@
 
 <style>
 	:global(body) {
-		font-family: "PT Serif Caption", serif;
+		font-family: "PT Serif Caption", "Google Sans", serif;
 		background-color: #ffffff;
 	}
 	

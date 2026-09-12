@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte';
+    import { t } from '$lib/i18n.svelte';
 
     let isFilterOpen = $state(false);
     let inventory = $state([]);
@@ -43,9 +44,9 @@
     {#each inventory as item (item.id)}
         <a class="item" href="/bracelet/{item.id}">
             <img class="thumbnail" src="{item.thumbnailUrls[0]}" />
-            <h2>{item.name.en}</h2>
+            <h2>{t(item.name)}</h2>
             <p class="description">
-                {item.materials.map(material => material.en).join(', ')}
+                {item.materials.map(m => t(m)).join(', ')}
             </p>
         </a>
     {/each}
