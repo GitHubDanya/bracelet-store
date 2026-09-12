@@ -1,0 +1,232 @@
+import argparse
+from dataclasses import dataclass
+import inquirer
+import json
+import psycopg2
+from psycopg2.extras import Json
+from psycopg2.extensions import connection
+from enum import Enum
+
+
+class UserAction(Enum):
+    ADD_ITEM = 1
+    REMOVE_ITEM = 2
+
+
+class ColumnStatus(Enum):
+    REQUIRED = 1
+    OPTIONAL = 2
+    SYSTEM_MANAGED = 3
+
+
+@dataclass
+class ColumnInfo:
+    name: str
+    data_type: str
+    is_nullable: bool
+    has_default: bool
+    status: ColumnStatus
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser("Tool for talking with a postgres database.")
+
+    parser.add_argument("user", help="PostgreSQL Username")
+    parser.add_argument("password", help="PostgreSQL Password")
+    parser.add_argument("database", help="PostgreSQL Database name")
+
+    return parser.parse_args()
+
+
+def connect_to_db(user: str, password: str, dbname: str) -> connection:
+    try:
+        connection = psycopg2.connect(
+            host="localhost",
+            port="5432",
+            dbname=dbname,
+            user=user,
+            password=password
+        )
+
+        print(f"Connected to {dbname}:{user}.\n")
+
+        return connection
+
+    except psycopg2.Error as error:
+        print(f"Failed to connect to the database: {error}")
+
+
+def get_tables(db_conn: connection):
+    cursor = connection.cursor(db_conn)
+    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+    tables = cursor.fetchall()
+    return [row[0] for row in tables]
+
+
+def get_table_schema(db_conn: connection, table_name: str):
+    cursor = db_conn.cursor()
+
+    query = """
+        SELECT column_name, data_type, is_nullable, column_default,
+            CASE
+                WHEN is_identity = 'YES' OR is_generated != 'NEVER' OR column_default LIKE 'nextval%%'
+                    THEN 'SYSTEM_MANAGED'
+                WHEN is_nullable = 'NO' AND column_default IS NULL
+                    THEN 'REQUIRED'
+                ELSE 'OPTIONAL'
+            END AS field_requirement
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = %s
+        ORDER BY ordinal_position;    
+    """
+
+    cursor.execute(query, (table_name,))
+    columns = cursor.fetchall()
+
+    return [
+        ColumnInfo(
+            name=row[0],
+            data_type=row[1],
+            is_nullable=(row[2] == 'YES'),
+            has_default=(row[3] is not None),
+            status=ColumnStatus[row[4]]
+        )
+        for row in columns
+    ]
+
+
+def get_user_selected_table(db_conn: connection) -> str | None:
+    tables = get_tables(db_conn)
+    questions = [
+        inquirer.List(
+            'target_table',
+            message="Which table do you want to select?",
+            choices=tables,
+        )
+    ]
+
+    answers = inquirer.prompt(questions)
+
+    if answers:
+        return answers['target_table']
+    return None
+
+def get_user_action():
+    enum_choices = [(action.name.replace('_', ' ').capitalize(), action) for action in UserAction]
+
+    questions = [
+        inquirer.List(
+            'action',
+            message="Which action do you want to perform?",
+            choices=enum_choices,
+        )
+    ]
+
+    answers = inquirer.prompt(questions)
+
+    if answers:
+        return answers['action']
+    return None
+
+
+def get_inquirer_question_for_field(field: ColumnInfo):
+    label = f"{field.name} [{field.data_type}]"
+    if field.status == ColumnStatus.OPTIONAL: label += " [OPTIONAL]"
+
+    if field.data_type == 'boolean':
+        return inquirer.Confirm(field.name, message=f"Is {field.name} enabled?", default=True)
+    else:
+        return inquirer.Text(label, message=f"Enter {label}")
+
+
+def format_to_json(answers: dict, table_schema: list[ColumnInfo]) -> dict:
+    for field in table_schema:
+        continue
+
+    return answers
+
+def prompt_user_insert(table_schema: list[ColumnInfo]):
+    questions = []
+
+    print("\nPlease fill out these schema parameters: ")
+
+    for field in table_schema:
+        if field.status == ColumnStatus.SYSTEM_MANAGED:
+            print(f'{field.name} is system managed, skipping...')
+            continue
+        questions.append(get_inquirer_question_for_field(field))
+
+    answers = format_to_json(inquirer.prompt(questions), table_schema)
+
+    return answers
+
+def insert_user_prompt_into_db(db_connection: connection, prompt: dict):
+    cleaned_data = {}
+
+    for raw_key, value in prompt.items():
+        clean_key = raw_key.split(' ')[0]
+
+        if value == '' or value is None:
+            continue
+
+        if '[jsonb]' in raw_key:
+            if isinstance(value, str):
+                cleaned_data[clean_key] = Json(json.loads(value))
+            else:
+                cleaned_data[clean_key] = Json(value)
+
+        elif '[ARRAY]' in raw_key:
+            if isinstance(value, str):
+                cleaned_data[clean_key] = [item.strip() for item in value.split(',') if item.strip()]
+            else:
+                cleaned_data[clean_key] = value
+
+        elif '[numeric]' in raw_key:
+            cleaned_data[clean_key] = float(value) if '.' in str(value) else int(value)
+
+        else:
+            cleaned_data[clean_key] = value
+
+    if not cleaned_data:
+        print("No valid fields to insert.")
+        return
+
+    columns = list(cleaned_data.keys())
+    column_names = ", ".join(columns)
+    placeholders = ", ".join(["%s"] * len(columns))
+    values = [cleaned_data[col] for col in columns]
+
+    query = f"INSERT INTO bracelets ({column_names}) VALUES ({placeholders});"
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(query, values)
+        db_connection.commit()
+        print(f"Successfully inserted row into database!")
+
+
+def main():
+    arguments = parse_args()
+    print("\nConnecting to db...")
+    db_connection = connect_to_db(arguments.user, arguments.password, arguments.database)
+
+    selected_table = get_user_selected_table(db_connection)
+    if selected_table is None:
+        print("Failed to fetch table.")
+        return
+
+    selected_action = get_user_action()
+
+    table_schema = get_table_schema(db_connection, selected_table)
+
+    match selected_action:
+        case UserAction.ADD_ITEM:
+            prompt = prompt_user_insert(table_schema)
+            print(prompt)
+            insert_user_prompt_into_db(db_connection, prompt)
+        case _:
+            print("nil")
+
+
+
+if __name__ == "__main__":
+    main()
