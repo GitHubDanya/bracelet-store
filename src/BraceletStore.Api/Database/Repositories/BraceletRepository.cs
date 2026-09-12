@@ -21,6 +21,7 @@ public static class BraceletRepository
                            FROM bracelets
                            WHERE id = @Id;
                            """;
+
         return await DataProvider.QuerySingleAsync(db =>
             db.QueryFirstOrDefaultAsync<Bracelet>(sql, new { Id = id }));
     }
@@ -30,28 +31,35 @@ public static class BraceletRepository
         filter ??= new BraceletFilter();
         var builder = new SqlBuilder();
 
-        var selector =
-            builder.AddTemplate("""
-                                SELECT
-                                id AS Id, available AS Available, price AS Price,
-                                thumbnail_urls AS ThumbnailUrls, name As Name, 
-                                description AS Description, materials AS Materials,
-                                color AS Color
-                                FROM Bracelets
+        var selector = builder.AddTemplate("""
+                           SELECT
+                               id AS Id, 
+                               available AS Available, 
+                               price AS Price,
+                               thumbnail_urls AS ThumbnailUrls, 
+                               name AS Name, 
+                               description AS Description, 
+                               materials AS Materials,
+                               color AS Color
+                           FROM bracelets
+                           /**where**/
+                           ORDER BY id DESC
+                           LIMIT @Limit OFFSET @Offset
+                           """,
+            new
+            {
+                Limit = filter.PageSize,
+                Offset = (filter.Page - 1) * filter.PageSize
+            });
 
-                                ORDER BY id DESC
-                                LIMIT @Limit OFFSET @Offset
-                                """,
-                new
-                {
-                    Limit = filter.PageSize,
-                    Offset = (filter.Page - 1) * filter.PageSize,
-                    Lang = filter.Lang
-                });
+        if (filter.AvailableOnly == true) 
+            builder.Where("available = true");
 
-        if (filter.AvailableOnly == true) builder.Where("available = true");
-        if (filter.MinPrice.HasValue) builder.Where("price >= @MinPrice");
-        if (filter.MaxPrice.HasValue) builder.Where($"price <= @MaxPrice");
+        if (filter.MinPrice.HasValue) 
+            builder.Where("price >= @MinPrice", new { MinPrice = filter.MinPrice.Value });
+
+        if (filter.MaxPrice.HasValue) 
+            builder.Where("price <= @MaxPrice", new { MaxPrice = filter.MaxPrice.Value });
 
         if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
         {
@@ -65,8 +73,8 @@ public static class BraceletRepository
                 new { Lang = filter.Lang, Material = filter.Material });
         }
 
-        return await DataProvider.QuerySingleAsync(db =>
-            db.QueryFirstOrDefaultAsync<IEnumerable<Bracelet>>(selector.RawSql, selector.Parameters));
+        return await DataProvider.QueryManyAsync(db =>
+            db.QueryAsync<Bracelet>(selector.RawSql, selector.Parameters));
     }
 }
 
