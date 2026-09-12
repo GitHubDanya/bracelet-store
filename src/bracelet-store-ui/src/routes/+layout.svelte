@@ -1,7 +1,12 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
-
 	let { children } = $props();
+	
+	let languageDropOpen = $state(false)
+	const toggleLanguageDrop = () => languageDropOpen = !languageDropOpen
+	function setLanguage(language) {
+		languageDropOpen = false
+	}
 </script>
 
 <svelte:head>
@@ -15,8 +20,8 @@
 <header class="top-bar">
 	<div class="logo">
 		<a class="logo" href="/">
-			<p>Cherry </p>
 			<img src="/images/cherryIcon.svg"/>
+			<p>Cherry </p>
 		</a>
 	</div>
 	<nav>
@@ -24,9 +29,19 @@
 		<a href="/about">About</a>
 	</nav>
 	<div class="spacer"></div>
-	<button class="language-button">
-		<img class="language-icon" src="/images/languageIcon.svg"/>
-	</button>
+	<div class="language-dropdown-wrapper">
+		<button onclick={toggleLanguageDrop} class="language-button" type="button" aria-expanded={languageDropOpen}>
+			<img class="language-icon" src="/images/languageIcon.svg" alt="Select Language"/>
+		</button>
+
+		{#if languageDropOpen}
+			<ul class="dropdown-menu">
+				<li><button onclick={() => setLanguage('English')}>English</button></li>
+				<li><button onclick={() => setLanguage('Spanish')}>Español</button></li>
+				<li><button onclick={() => setLanguage('French')}>Français</button></li>
+			</ul>
+		{/if}
+	</div>
 </header>
 
 <main class="container">
@@ -58,7 +73,6 @@
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
-		margin-right: 1rem;
 	}
 
 	.logo a {
@@ -105,6 +119,42 @@
 	.language-button .language-icon {
 		height: 1rem;
 		width: 1rem;
+	}
+	
+	.language-dropdown-wrapper {
+		position: relative;
+		display: inline-block;
+	}
+	
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		margin-top: 1rem;
+		background-color: #ffffff;
+		border: 1px solid #e2e8f0;
+		border-radius: 0.375rem;
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		list-style: none;
+		padding: 0.5rem 0;
+		min-width: 120px;
+		z-index: 50;
+	}
+	
+	.dropdown-menu li button {
+		all: unset;
+		width: 100%;
+		padding: 0.5rem 1rem;
+		text-align: left;
+		background: none;
+		border: none;
+		cursor: pointer;
+	}
+
+	.dropdown-menu li button:hover {
+		background-color: #f1f5f9;
+		overflow: hidden;
+
 	}
 
 	.container {

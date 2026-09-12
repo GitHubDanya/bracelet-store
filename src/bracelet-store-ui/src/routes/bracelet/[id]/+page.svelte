@@ -17,7 +17,7 @@
 
 <div class="content">
     <div class="preview">
-        <img class="thumbnail" src="{images[selectedIndex]}"/>
+        <img class="thumbnail square-crop" src="{images[selectedIndex]}"/>
 
         <div class="toggle-bar">
             {#each images as image, index}
@@ -25,7 +25,7 @@
                         class:active={selectedIndex === index}
                         on:click={() => selectedIndex = index}
                 >
-                    <img src="{image}"/>
+                    <img class="square-crop" src="{image}"/>
                 </button>
             {/each}
         </div>
@@ -80,6 +80,13 @@
         width: calc(100% - 20px);
         height: auto;
         margin: 10px;
+    }
+
+    .square-crop {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        object-position: center;
     }
 
     .thumb-button {
