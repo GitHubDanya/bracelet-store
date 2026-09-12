@@ -1,2 +1,3 @@
 /src/BraceletStore.Api/obj/*
 /src/BraceletStore.Api/bin/*
+/src/BraceletStore.Api/.env
