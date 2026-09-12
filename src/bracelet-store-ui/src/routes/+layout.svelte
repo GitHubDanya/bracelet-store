@@ -14,12 +14,19 @@
 
 <header class="top-bar">
 	<div class="logo">
-		<a href="/">Logo</a>
+		<a class="logo" href="/">
+			<p>Cherry </p>
+			<img src="/images/cherryIcon.svg"/>
+		</a>
 	</div>
 	<nav>
 		<a href="/bracelets">Bracelets</a>
 		<a href="/about">About</a>
 	</nav>
+	<div class="spacer"></div>
+	<button class="language-button">
+		<img class="language-icon" src="/images/languageIcon.svg"/>
+	</button>
 </header>
 
 <main class="container">
@@ -38,17 +45,20 @@
 	
 	.top-bar {
 		display: flex;
-		justify-content: left;
+		justify-content: center;
 		align-items: center;
 		padding: 1rem 2rem;
 		background-color: #ffffff;
 		color: #111111;
 	}
 	
-	@media(max-width: 1024px) {
-		.top-bar {
-			justify-content: center;
-		}
+	.logo {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+		margin-right: 1rem;
 	}
 
 	.logo a {
@@ -56,6 +66,18 @@
 		font-size: 1.25rem;
 		color: #111111;
 		text-decoration: none;
+	}
+	
+	.logo a img {
+		height: 2rem;
+		width: 2rem;
+	}
+	
+	nav {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
 	}
 
 	nav a {
@@ -66,6 +88,23 @@
 
 	nav a:hover {
 		color: #999999;
+	}
+	
+	.spacer {
+		width: 2rem;
+	}
+
+	.language-button {
+		all: unset;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.language-button .language-icon {
+		height: 1rem;
+		width: 1rem;
 	}
 
 	.container {
@@ -80,5 +119,20 @@
 		text-align: center;
 		color: #696969;
 		font-size: 0.6rem;
+	}
+
+	@media(min-width: 1024px) {
+		.top-bar {
+			justify-content: left;
+		}
+
+		.spacer {
+			width: 100%;
+		}
+		
+		.language-button .language-icon {
+			width: 1.8rem;
+			height: 1.8rem;
+		}
 	}
 </style>
