@@ -5,7 +5,7 @@ namespace BraceletStore.Api.lib;
 
 public static class ExtensionFunctions
 {
-    public static string GetLocalized(this LocalizedRecord name, Language language) =>
+    public static string? GetLocalized(this LocalizedRecord name, Language language) =>
         language switch
         {
             Language.Hebrew => name.He,
