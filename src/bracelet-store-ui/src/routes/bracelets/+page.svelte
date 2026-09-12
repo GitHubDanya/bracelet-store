@@ -1,5 +1,15 @@
 <script>
+    import { onMount } from 'svelte';
+
     let isFilterOpen = $state(false);
+    let inventory = $state([]);
+
+    onMount(async () => {
+        const res = await fetch('/api/inventory');
+        if (res.ok) {
+            inventory = await res.json();
+        }
+    });
 </script>
 
 <div class="search-container">
@@ -16,7 +26,6 @@
         <div class="filter-menu">
             <details>
                 <summary>Material</summary>
-                
                 <br/>
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
                     <li><label><input type="checkbox" /> Quartz</label></li>
@@ -29,38 +38,51 @@
 </div>
 
 <p class="results-title">Results</p>
+
 <div class="results">
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Silk Bracelet</h2>
-        <p class="description">Red Amethyst</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Very Complicated Fancy Bracelet</h2>
-        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Simple Bracelet</h2>
-        <p class="description">String</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Interesting Bracelet</h2>
-        <p class="description">Secrets</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Interesting Bracelet</h2>
-        <p class="description">Secrets</p>
-    </a>
-    <a class="item" href="/bracelet/1">
-        <img class="thumbnail" src="/images/bracelet.jpeg"/>
-        <h2>Interesting Bracelet</h2>
-        <p class="description">Secrets</p>
-    </a>
+    {#each inventory as item (item.id)}
+        <a class="item" href="/bracelet/{item.id}">
+            <img class="thumbnail" src="{item.thumbnailUrls[0]}" />
+            <h2>{item.name.en}</h2>
+            <p class="description">
+                {item.materials.map(material => material.en).join(', ')}
+            </p>
+        </a>
+    {/each}
 </div>
+
+<!--<div class="results">-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Silk Bracelet</h2>-->
+<!--        <p class="description">Red Amethyst</p>-->
+<!--    </a>-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Very Complicated Fancy Bracelet</h2>-->
+<!--        <p class="description">Rose Quartz, Amethyst, Lava Stone, Glass</p>-->
+<!--    </a>-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Simple Bracelet</h2>-->
+<!--        <p class="description">String</p>-->
+<!--    </a>-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Interesting Bracelet</h2>-->
+<!--        <p class="description">Secrets</p>-->
+<!--    </a>-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Interesting Bracelet</h2>-->
+<!--        <p class="description">Secrets</p>-->
+<!--    </a>-->
+<!--    <a class="item" href="/bracelet/1">-->
+<!--        <img class="thumbnail" src="/images/bracelet.jpeg"/>-->
+<!--        <h2>Interesting Bracelet</h2>-->
+<!--        <p class="description">Secrets</p>-->
+<!--    </a>-->
+<!--</div>-->
 
 <style>
     .search-container {
