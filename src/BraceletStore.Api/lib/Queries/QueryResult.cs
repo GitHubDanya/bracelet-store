@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BraceletStore.Api.lib.Queries;
 
@@ -10,6 +11,14 @@ public record QueryResult<T>(T? Data, QueryStatus Status, Exception? Exception =
         new(default, QueryStatus.NotFound);
     public static QueryResult<T> Fail(Exception exception) =>
         new(default, QueryStatus.Failed, exception);
+    public ActionResult<T> ToActionResult() =>
+        Status switch
+        {
+            QueryStatus.Ok => new OkObjectResult(Data),
+            QueryStatus.NotFound => new NotFoundResult(),
+            _ => new ObjectResult(Exception?.Message) { StatusCode = 500 }
+        };
+    
 }
 
 public enum QueryStatus
