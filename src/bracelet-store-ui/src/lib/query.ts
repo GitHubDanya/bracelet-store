@@ -1,9 +1,19 @@
 export class QueryResult {
     static buildUrl(endpoint: string, params: Record<string, unknown> = {}): string {
-        const activeParams = Object.fromEntries(
-            Object.entries(params).filter(([_, val]) => val !== null && val !== undefined && val !== '')
-        );
-        const queryString = new URLSearchParams(activeParams as Record<string, string>).toString();
+        const searchParams = new URLSearchParams();
+
+        Object.entries(params).forEach(([key, val]) => {
+            if (val === null || val === undefined || val === '') return;
+
+            if (Array.isArray(val)) {
+                // Generates: ?materials=Quartz&materials=Moss+Agate
+                val.forEach(item => searchParams.append(key, String(item)));
+            } else {
+                searchParams.append(key, String(val));
+            }
+        });
+
+        const queryString = searchParams.toString();
         return queryString ? `${endpoint}?${queryString}` : endpoint;
     }
 
