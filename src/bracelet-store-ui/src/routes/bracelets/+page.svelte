@@ -4,11 +4,16 @@
 
     let isFilterOpen = $state(false);
     let inventory = $state([]);
+    let materials = $state([]);
 
     onMount(async () => {
         const res = await fetch('/api/inventory');
         if (res.ok) {
             inventory = await res.json();
+        }
+        const mats = await fetch('api/inventory/materials');
+        if (mats.ok) {
+            materials = await mats.json();
         }
     });
 </script>
@@ -29,8 +34,9 @@
                 <summary>Material</summary>
                 <br/>
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
-                    <li><label><input type="checkbox" /> Quartz</label></li>
-                    <li><label><input type="checkbox" /> Amethyst</label></li>
+                    {#each materials as material}
+                        <li><label><input type="checkbox" /> {material}</label></li>
+                    {/each}
                 </ul>
             </details>
         </div>
