@@ -93,8 +93,7 @@ public static class BraceletRepository
 
         return await DataProvider.QuerySingleAsync(async db =>
         {
-            var result = await db.QueryAsync<string>(sql, new { Lang = filter.Lang });
-            Console.WriteLine(result.FirstOrDefault());
+            var result = await db.QueryAsync<string>(sql, new { Lang = filter.Lang }); 
             return result.ToList();
         });
     }
