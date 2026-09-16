@@ -5,7 +5,6 @@
 
     let newBracelets = $state([]);
     let randomBracelets = $state([]);
-    let filter = { pageSize: 5 };
     
     onMount(async () => {
         QueryResult.fetch('/api/inventory', (res) => newBracelets = res, { pageSize: 5 })
