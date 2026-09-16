@@ -22,4 +22,11 @@ public class InventoryController : ControllerBase
         var result = await BraceletRepository.FindByIdAsync(id);
         return result.ToActionResult();
     }
+
+    [HttpGet("materials")]
+    public async Task<ActionResult<List<string>>> GetMaterials([FromQuery] BraceletFilter filter)
+    {
+        var result = await BraceletRepository.FetchMaterials(filter);
+        return result.ToActionResult();
+    }
 }
