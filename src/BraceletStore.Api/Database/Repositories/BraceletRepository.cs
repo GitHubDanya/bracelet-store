@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BraceletStore.Api.lib.Queries;
 using BraceletStore.Api.Models.Bracelet;
 using Dapper;
@@ -68,10 +69,19 @@ public static class BraceletRepository
                 new { Term = $"%{filter.SearchTerm}%", Lang = filter.Lang });
         }
 
-        if (!string.IsNullOrWhiteSpace(filter.Material))
+        if (filter.Materials?.Any() == true)
         {
-            builder.Where("materials @> jsonb_build_array(jsonb_build_object(@Lang, @Material))",
-                new { Lang = filter.Lang, Material = filter.Material });
+            builder.Where("""
+                                  NOT EXISTS (
+                                  SELECT 1 
+                                  FROM unnest(@Materials) AS req_mat
+                                  WHERE NOT EXISTS (
+                                      SELECT 1 
+                                      FROM jsonb_array_elements(materials) AS db_mat
+                                      WHERE db_mat ->> @Lang = req_mat
+                                  )
+                              )
+                          """, new { Lang = filter.Lang, Materials = filter.Materials.ToArray() });
         }
 
         return await DataProvider.QueryManyAsync(db =>
@@ -102,7 +112,7 @@ public static class BraceletRepository
 
 public record BraceletFilter(
     string? SearchTerm = null,
-    string? Material = null,
+    List<string>? Materials = null,
     decimal? MinPrice = null,
     decimal? MaxPrice = null,
     bool? AvailableOnly = null,
