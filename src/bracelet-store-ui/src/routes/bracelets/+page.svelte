@@ -6,6 +6,8 @@
     let isFilterOpen = $state(false);
     let inventory = $state([]);
     let materials = $state([]);
+    
+    let selectedMaterials = $state([]);
 
     onMount(async () => {
         await Promise.all([
@@ -13,6 +15,12 @@
             QueryResult.fetch('/api/inventory/materials', res => materials = res)
         ]);
     });
+    
+    function search() {
+        const filter = { materials: selectedMaterials };
+        QueryResult.fetch('/api/inventory', res => inventory = res, filter);
+        console.log(filter)
+    }
 </script>
 
 <div class="search-container">
@@ -32,13 +40,17 @@
                 <br/>
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
                     {#each materials as material}
-                        <li><label><input type="checkbox" /> {material}</label></li>
+                        <li><label><input
+                                type="checkbox"
+                                bind:group={selectedMaterials}
+                                value={material}
+                        /> {material}</label></li>
                     {/each}
                 </ul>
             </details>
         </div>
     {/if}
-    <button type="submit" class="search-btn">Search</button>
+    <button type="submit" class="search-btn" on:click={search}>Search</button>
 </div>
 
 <p class="results-title">Results</p>
