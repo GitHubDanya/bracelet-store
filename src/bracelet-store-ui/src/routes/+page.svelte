@@ -1,30 +1,15 @@
 <script>
     import { onMount } from 'svelte';
     import { t } from '$lib/i18n.svelte';
+    import { QueryResult } from '\$lib/query';
 
     let newBracelets = $state([]);
     let randomBracelets = $state([]);
     let filter = { pageSize: 5 };
-
-    async function fetchInventory(params = {}) {
-        const activeParams = Object.fromEntries(
-            Object.entries(params).filter(([_, val]) => val !== null && val !== undefined && val !== '')
-        );
-        const queryString = new URLSearchParams(activeParams).toString();
-        const url = `/api/inventory${queryString ? `?${queryString}` : ''}`;
-
-        const res = await fetch(url);
-        return res.ok ? await res.json() : [];
-    }
-
+    
     onMount(async () => {
-        const [fetchedNew, fetchedAll] = await Promise.all([
-            fetchInventory(filter),
-            fetchInventory()
-        ]);
-
-        newBracelets = fetchedNew;
-        randomBracelets = [...fetchedAll].sort(() => Math.random() - 0.5);
+        QueryResult.fetch('/api/inventory', (res) => newBracelets = res, { pageSize: 5 })
+        QueryResult.fetch('/api/inventory', (res) => randomBracelets = res)
     });
 </script>
 
