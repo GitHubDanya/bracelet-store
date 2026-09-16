@@ -1,20 +1,17 @@
 <script>
     import { onMount } from 'svelte';
     import { t } from '$lib/i18n.svelte';
+    import { QueryResult } from '\$lib/query';
 
     let isFilterOpen = $state(false);
     let inventory = $state([]);
     let materials = $state([]);
 
     onMount(async () => {
-        const res = await fetch('/api/inventory');
-        if (res.ok) {
-            inventory = await res.json();
-        }
-        const mats = await fetch('api/inventory/materials');
-        if (mats.ok) {
-            materials = await mats.json();
-        }
+        await Promise.all([
+            QueryResult.fetch('/api/inventory', res => inventory = res),
+            QueryResult.fetch('/api/inventory/materials', res => materials = res)
+        ]);
     });
 </script>
 
